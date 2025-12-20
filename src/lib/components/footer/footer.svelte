@@ -11,7 +11,10 @@
 				<div class="grid grid-cols-2 gap-8">
 					<div>
 						<ul class="space-y-2">
-							<li><a href="#" class="transition-colors hover:text-white">Ficha Técnica</a></li>
+							<li>
+								<a href="/ficha-tecnica" class="transition-colors hover:text-white">Ficha Técnica</a
+								>
+							</li>
 							<li>
 								<a href="#" class="transition-colors hover:text-white">Política de Cookies</a>
 							</li>
