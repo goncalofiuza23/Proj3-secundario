@@ -12,14 +12,16 @@
 					<div>
 						<ul class="space-y-2">
 							<li>
-								<a href="/ficha-tecnica" class="transition-colors hover:text-white">Ficha Técnica</a
+								<a href="/ficha_tecnica" class="transition-colors hover:text-white">Ficha Técnica</a
 								>
 							</li>
 							<li>
-								<a href="#" class="transition-colors hover:text-white">Política de Cookies</a>
+								<a href="/politica_cookies" class="transition-colors hover:text-white"
+									>Política de Cookies</a
+								>
 							</li>
 							<li>
-								<a href="#" class="transition-colors hover:text-white"
+								<a href="/politica_privacidade" class="transition-colors hover:text-white"
 									>Política de Privacidade e Proteção de Dados</a
 								>
 							</li>

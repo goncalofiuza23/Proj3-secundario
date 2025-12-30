@@ -1,9 +1,7 @@
-export type Item = {
-    name: string;
-    href: string;
-}
+import type { Component } from "svelte";
 
-export type itemsAlunos = {
+export type MenuItem = {
     name: string;
     href: string;
+    icon: any
 }

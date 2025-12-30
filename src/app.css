@@ -125,7 +125,7 @@
     }
 
     h2 {
-        @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
+        @apply scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
     }
 
     h3 {
@@ -139,5 +139,22 @@
     p {
         @apply leading-7
     }
+}
 
+@layer utilities {
+    .lead {
+        @apply text-muted-foreground text-xl;
+    }
+
+    .large {
+        @apply text-lg font-semibold;
+    }
+
+    .small {
+        @apply text-sm leading-none font-medium
+    }
+
+    .muted {
+        @apply text-muted-foreground text-sm
+    }
 }

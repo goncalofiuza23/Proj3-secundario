@@ -12,8 +12,8 @@
 
 	const navigationItems: NavigationItem[] = [
 		{ title: 'Missão', href: '/missao' },
-		{ title: 'Contactos Si', href: '/contatos_si' },
-		{ title: 'Contactos Si UO', href: '/contatos_si_uo' }
+		{ title: 'Contactos Si', href: '/contactos-si' },
+		{ title: 'Contactos Si UO', href: '/contactos-si-uo' }
 	];
 
 	let mobileMenuOpen = $state(false);
@@ -22,8 +22,10 @@
 <!-- desktop version -->
 <div class="hidden lg:block">
 	<div class="grid grid-cols-3" aria-label="main navigation">
-		<div class="col-span-3 bg-white px-10 py-10 lg:col-span-1">
-			<h1>logo goes here</h1>
+		<div class="col-span-3 bg-white px-6 py-4 lg:col-span-1">
+			<a href="/" aria-label="Ir para a página inicial">
+				<img src="/logo.png" alt="Logótipo da Empresa" class="h-20 w-auto object-contain" />
+			</a>
 		</div>
 		<div class="col-span-3 bg-secondary lg:col-span-2">
 			<div class="flex justify-between px-10 py-10">
@@ -51,7 +53,9 @@
 <!-- Mobile version -->
 <div class="block lg:hidden">
 	<div class="flex items-center justify-between bg-white px-10 py-10" aria-label="main navigation">
-		<h1>logo goes here</h1>
+		<a href="/" aria-label="Ir para a página inicial">
+			<img src="/logo.png" alt="Logótipo da Empresa" class="h-20 w-auto object-contain" />
+		</a>
 		<button onclick={() => (mobileMenuOpen = true)}>
 			<Menu />
 		</button>
