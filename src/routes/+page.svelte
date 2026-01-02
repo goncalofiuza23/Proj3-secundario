@@ -13,8 +13,8 @@
 
 <TopBarGeneric text="Serviços Globais" bgColor="foreground" />
 
-<div class="mx-10 my-10">
-	<div class="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-9">
+<div class="mx-2 my-10 md:mx-30">
+	<div class="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-6 lg:grid-cols-9">
 		{#each globalItems as item, index (index)}
 			<MenuItemNav {item} />
 		{/each}
@@ -24,8 +24,8 @@
 <div class="grid grid-cols-2">
 	<div class="col-span-2 bg-[#E7F2F4] md:col-span-1">
 		<TopBarGeneric text="Serviços para Alunos" />
-		<div class="mx-10 my-10">
-			<div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+		<div class="mx-2 my-10 md:mx-30">
+			<div class="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-6">
 				{#each studentItems as item, index (index)}
 					<MenuItemNav {item} />
 				{/each}
@@ -34,8 +34,8 @@
 	</div>
 	<div class="col-span-2 md:col-span-1">
 		<TopBarGeneric text="Serviços para Docentes" bgColor="foreground" />
-		<div class="mx-10 my-10">
-			<div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+		<div class="mx-2 my-10 md:mx-30">
+			<div class="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-6">
 				{#each teachersItems as item, index (index)}
 					<MenuItemNav {item} />
 				{/each}

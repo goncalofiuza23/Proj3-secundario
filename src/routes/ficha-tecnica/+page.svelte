@@ -1,119 +1,225 @@
-<div class="flex w-full justify-center">
-	<div class="flex w-10/12 flex-col items-center">
-		<div class="w-full truncate text-left">
-			<p id="breadcrumbs" class="truncate text-sm text-gray-500">
-				<span class="pointer-events-auto">
-					<span>
-						<a href="https://www.ipvc.pt/" class="hover:underline">Início</a>
-					</span>
-					/
-					<span class="font-bold text-black" aria-current="page">Ficha Técnica</span>
-				</span>
+<script lang="ts">
+	import TopBarGeneric from '$lib/components/top-bar/top-bar-generic.svelte';
+	import TopBarClass from '$lib/components/top-bar/top-bar-class.svelte';
+
+	// Ícones para ilustrar as secções
+	import Users from '@lucide/svelte/icons/users';
+	import Code from '@lucide/svelte/icons/code';
+	import Palette from '@lucide/svelte/icons/palette';
+	import Globe from '@lucide/svelte/icons/globe';
+	import Monitor from '@lucide/svelte/icons/monitor';
+	import Mail from '@lucide/svelte/icons/mail';
+	import Building from '@lucide/svelte/icons/building-2';
+	import Languages from '@lucide/svelte/icons/languages';
+</script>
+
+<TopBarGeneric text="Sobre o IPVC" bgColor="foreground" />
+<TopBarClass text="Ficha Técnica" bgColor="primary" />
+
+<div class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-12">
+	<div class="flex-grow space-y-12">
+		<div class="border-b border-slate-200 pb-4">
+			<h2 class="text-2xl font-bold tracking-wide text-primary uppercase">
+				Ficha Técnica do Portal
+			</h2>
+			<p class="mt-2 text-slate-600">
+				Informações sobre a equipa, tecnologias e entidades envolvidas no desenvolvimento do portal.
 			</p>
 		</div>
-	</div>
-</div>
 
-<div class="mx-auto w-full max-w-5xl px-6 py-12">
-	<div class="mb-10 border-b border-gray-200 pb-4">
-		<h1
-			class="inline-block bg-primary p-4 text-3xl font-bold text-white md:text-4xl"
-			id="accessibilityGoMainContent"
-		>
-			Ficha Técnica
-		</h1>
-	</div>
-
-	<div class="grid grid-cols-1 gap-x-16 gap-y-10 text-gray-700 md:grid-cols-2">
-		<div class="space-y-8">
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">
-					Suporte Técnico
-				</h3>
-				<p>Instituto Politécnico de Viana do Castelo</p>
-			</div>
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">
-					Coordenação Institucional
-				</h3>
-				<p>Ana Paula Vale</p>
-			</div>
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">
-					Coordenação Técnica
-				</h3>
-				<p>Jorge Esparteiro Garcia – ESCE</p>
-			</div>
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">Colaboradores</h3>
-				<ul class="space-y-1">
-					<li>Susana Caravana – GCI</li>
-					<li>Olga Pereira Costa – GCI</li>
-					<li>Pedro Miguel Sousa – GCI</li>
-					<li>José Rocha – GCI</li>
-				</ul>
-			</div>
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">
-					Gestores de conteúdos nas Unidades Orgânicas
-				</h3>
-				<ul class="grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-2">
-					<li>Cristina Fernandes – ESE</li>
-					<li>João Pereira – ESE</li>
-					<li>Ofélia Brito – ESA</li>
-					<li>José Mário Rodrigues – ESTG</li>
-					<li>Luís Carrilho – ESCE</li>
-					<li>Pedro Araújo – ESS</li>
-					<li>Tiago Araújo – ESDL</li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="space-y-8 text-gray-700">
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">Tradução</h3>
-				<a
-					href="https://www.janeladaspalavras.com"
-					class="text-gray-900 underline decoration-teal-600/30 transition hover:text-teal-600 hover:decoration-teal-600"
+		<div class="grid gap-8 lg:grid-cols-2">
+			<div
+				class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
+			>
+				<h4
+					class="mb-6 flex items-center gap-2 border-b border-slate-100 pb-2 text-sm font-bold tracking-wider text-primary uppercase"
 				>
-					Janela das palavras
-				</a>
-			</div>
+					<Users class="h-4 w-4" /> Coordenação e Equipa
+				</h4>
 
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">
-					Design e Desenvolvimento
-				</h3>
-				<a
-					href="https://skillmind.pt/"
-					class="text-gray-900 underline decoration-teal-600/30 transition hover:text-teal-600 hover:decoration-teal-600"
-				>
-					Skillmind
-				</a>
-			</div>
+				<div class="space-y-6">
+					<div class="flex gap-4">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-50 text-primary"
+						>
+							<Building class="h-5 w-5" />
+						</div>
+						<div>
+							<p class="text-xs font-bold text-slate-400 uppercase">Suporte Técnico</p>
+							<p class="font-medium text-slate-900">Instituto Politécnico de Viana do Castelo</p>
+						</div>
+					</div>
 
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">Tecnologias</h3>
-				<p>HTML5, CSS3, JavaScript</p>
-			</div>
+					<div class="flex gap-4">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-50 text-primary"
+						>
+							<Users class="h-5 w-5" />
+						</div>
+						<div>
+							<p class="text-xs font-bold text-slate-400 uppercase">Coordenação Institucional</p>
+							<p class="font-medium text-slate-900">Ana Paula Vale</p>
+						</div>
+					</div>
 
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">
-					Compatibilidade
-				</h3>
-				<div class="space-y-2 text-sm">
-					<p>Todo e qualquer navegador com suporte HTML5/CSS3 e JavaScript ativo.</p>
-					<p>Recomendado: Edge, Firefox, Safari, Opera e Chrome.</p>
-					<p>Adaptável a dispositivos móveis.</p>
+					<div class="flex gap-4">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-50 text-primary"
+						>
+							<Code class="h-5 w-5" />
+						</div>
+						<div>
+							<p class="text-xs font-bold text-slate-400 uppercase">Coordenação Técnica</p>
+							<p class="font-medium text-slate-900">
+								Jorge Esparteiro Garcia <span class="text-sm font-normal text-slate-400"
+									>– ESCE</span
+								>
+							</p>
+						</div>
+					</div>
+
+					<div class="rounded-lg border border-slate-100 bg-slate-50 p-4">
+						<p class="mb-3 text-xs font-bold text-slate-400 uppercase">Colaboradores (GCI)</p>
+						<ul class="grid grid-cols-1 gap-2 text-sm text-slate-700 sm:grid-cols-2">
+							<li class="flex items-center gap-2">
+								<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+								 Susana Caravana
+							</li>
+							<li class="flex items-center gap-2">
+								<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+								 Olga Pereira Costa
+							</li>
+							<li class="flex items-center gap-2">
+								<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+								 Pedro Miguel Sousa
+							</li>
+							<li class="flex items-center gap-2">
+								<div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+								 José Rocha
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 
-			<div>
-				<h3 class="mb-2 text-sm font-bold tracking-wider text-teal-600 uppercase">Contacto</h3>
-				<a href="mailto:geral@ipvc.pt" class="text-lg font-medium transition hover:text-teal-600">
-					geral@ipvc.pt
-				</a>
+			<div
+				class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
+			>
+				<h4
+					class="mb-6 flex items-center gap-2 border-b border-slate-100 pb-2 text-sm font-bold tracking-wider text-primary uppercase"
+				>
+					<Globe class="h-4 w-4" /> Gestores de Conteúdos (UO)
+				</h4>
+
+				<ul class="space-y-4">
+					<li class="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0">
+						<span class="text-slate-700">Cristina Fernandes / João Pereira</span>
+						<span class="rounded bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">ESE</span>
+					</li>
+					<li class="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0">
+						<span class="text-slate-700">Ofélia Brito</span>
+						<span class="rounded bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">ESA</span>
+					</li>
+					<li class="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0">
+						<span class="text-slate-700">José Mário Rodrigues</span>
+						<span class="rounded bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">ESTG</span>
+					</li>
+					<li class="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0">
+						<span class="text-slate-700">Luís Carrilho</span>
+						<span class="rounded bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">ESCE</span>
+					</li>
+					<li class="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0">
+						<span class="text-slate-700">Pedro Araújo</span>
+						<span class="rounded bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">ESS</span>
+					</li>
+					<li class="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0">
+						<span class="text-slate-700">Tiago Araújo</span>
+						<span class="rounded bg-teal-50 px-2 py-1 text-xs font-bold text-teal-700">ESDL</span>
+					</li>
+				</ul>
 			</div>
+
+			<div
+				class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-primary/30 hover:shadow-md lg:col-span-2"
+			>
+				<h4
+					class="mb-6 flex items-center gap-2 border-b border-slate-100 pb-2 text-sm font-bold tracking-wider text-primary uppercase"
+				>
+					<Monitor class="h-4 w-4" /> Desenvolvimento e Tecnologia
+				</h4>
+
+				<div class="grid gap-8 md:grid-cols-3">
+					<div class="space-y-6">
+						<div>
+							<div class="mb-1 flex items-center gap-2 text-xs font-bold text-slate-400 uppercase">
+								<Languages class="h-3 w-3" /> Tradução
+							</div>
+							<a
+								href="https://www.janeladaspalavras.com"
+								target="_blank"
+								class="font-medium text-primary hover:underline"
+							>
+								Janela das palavras
+							</a>
+						</div>
+						<div>
+							<div class="mb-1 flex items-center gap-2 text-xs font-bold text-slate-400 uppercase">
+								<Palette class="h-3 w-3" /> Design e Desenvolvimento
+							</div>
+							<a
+								href="https://skillmind.pt/"
+								target="_blank"
+								class="font-medium text-primary hover:underline"
+							>
+								Skillmind
+							</a>
+						</div>
+					</div>
+
+					<div>
+						<div class="mb-2 flex items-center gap-2 text-xs font-bold text-slate-400 uppercase">
+							<Code class="h-3 w-3" /> Stack Tecnológica
+						</div>
+						<div class="flex flex-wrap gap-2">
+							<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+								>HTML5</span
+							>
+							<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+								>CSS3</span
+							>
+							<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+								>JavaScript</span
+							>
+							<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+								>SvelteKit</span
+							>
+							<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+								>Tailwind</span
+							>
+						</div>
+					</div>
+
+					<div>
+						<div class="mb-2 flex items-center gap-2 text-xs font-bold text-slate-400 uppercase">
+							<Monitor class="h-3 w-3" /> Compatibilidade
+						</div>
+						<p class="text-sm leading-relaxed text-slate-600">
+							Otimizado para navegadores modernos (Edge, Firefox, Safari, Chrome). Totalmente
+							adaptável a dispositivos móveis e tablets.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex justify-center pt-4">
+			<a
+				href="mailto:geral@ipvc.pt"
+				class="group inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-teal-700 hover:shadow-lg"
+			>
+				<Mail class="h-5 w-5 transition-transform group-hover:scale-110" />
+				Contactar Geral: geral@ipvc.pt
+			</a>
 		</div>
 	</div>
 

@@ -12,33 +12,46 @@
 					<div>
 						<ul class="space-y-2">
 							<li>
-								<a href="/ficha_tecnica" class="transition-colors hover:text-white">Ficha Técnica</a
+								<a href="/ficha-tecnica" class="transition-colors hover:text-primary"
+									>Ficha Técnica</a
 								>
 							</li>
 							<li>
-								<a href="/politica_cookies" class="transition-colors hover:text-white"
+								<a href="/politica-cookies" class="transition-colors hover:text-primary"
 									>Política de Cookies</a
 								>
 							</li>
 							<li>
-								<a href="/politica_privacidade" class="transition-colors hover:text-white"
+								<a href="/politica-privacidade" class="transition-colors hover:text-primary"
 									>Política de Privacidade e Proteção de Dados</a
 								>
 							</li>
 							<li>
-								<a href="#" class="transition-colors hover:text-white"
+								<a href="/sugestoes" class="transition-colors hover:text-primary"
 									>Sugestões, Elogios e Reclamações</a
 								>
 							</li>
-							<li><a href="#" class="transition-colors hover:text-white">Denúncias</a></li>
+							<li>
+								<a href="/denuncias" class="transition-colors hover:text-primary">Denúncias</a>
+							</li>
 						</ul>
 					</div>
 					<div>
 						<ul class="space-y-2">
-							<li><a href="#" class="transition-colors hover:text-white">Notícias</a></li>
-							<li><a href="#" class="transition-colors hover:text-white">Redes Sociais</a></li>
-							<li><a href="#" class="transition-colors hover:text-white">Serviços On-line</a></li>
-							<li><a href="#" class="transition-colors hover:text-white">Mapa do Site</a></li>
+							<li><a href="/noticias" class="transition-colors hover:text-primary">Notícias</a></li>
+							<li>
+								<a href="/redes-sociais" class="transition-colors hover:text-primary"
+									>Redes Sociais</a
+								>
+							</li>
+							<li>
+								<a href="/servicos-online" class="transition-colors hover:text-primary"
+									>Serviços On-line</a
+								>
+							</li>
+							<li>
+								<a href="/mapa-site" class="transition-colors hover:text-primary">Mapa do Site</a>
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -51,11 +64,16 @@
 					<li>Serviços Centrais e Presidência</li>
 					<li>Rua Escola Industrial e Comercial Nun'Álvares, 34 4900-347 Viana do Castelo</li>
 					<li>
-						<a href="mailto:geral@ipvc.pt">geral@ipvc.pt</a>
+						<a href="mailto:geral@ipvc.pt" class="transition-colors hover:text-primary"
+							>geral@ipvc.pt</a
+						>
 					</li>
 					<li>
-						<a href="tel:351258809610">+351 258 809 610</a> |
-						<a href="tel:965919650">+965 919 650</a>
+						<a href="tel:351258809610" class="transition-colors hover:text-primary"
+							>+351 258 809 610</a
+						>
+						|
+						<a href="tel:965919650" class="transition-colors hover:text-primary">+965 919 650</a>
 					</li>
 				</ul>
 			</div>
