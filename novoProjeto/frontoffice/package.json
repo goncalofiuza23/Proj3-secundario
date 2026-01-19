@@ -1,0 +1,13 @@
+{
+    "name": "frontoffice",
+    "private": true,
+    "scripts": {
+        "dev": "svelte-kit dev",
+        "build": "svelte-kit build",
+        "preview": "svelte-kit preview"
+    },
+    "devDependencies": {
+        "@sveltejs/kit": "next",
+        "svelte": "^4.0.0"
+    }
+}

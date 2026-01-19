@@ -2,7 +2,7 @@
 	import TopBarUtilities from '$lib/components/top-bar/top-bar-utilities.svelte';
 	import TopBarMenu from '$lib/components/top-bar/top-bar-menu.svelte';
 
-	import '../app.css';
+	import '../../app.css';
 	import Footer from '$lib/components/footer/footer.svelte';
 
 	let { children } = $props();
@@ -13,6 +13,7 @@
 </svelte:head>
 
 <header>
+	<TopBarUtilities />
 	<TopBarMenu />
 </header>
 
