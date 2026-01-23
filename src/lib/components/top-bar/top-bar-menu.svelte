@@ -19,7 +19,6 @@
 	let mobileMenuOpen = $state(false);
 </script>
 
-<!-- desktop version -->
 <div class="hidden lg:block">
 	<div class="grid grid-cols-3" aria-label="main navigation">
 		<div class="col-span-3 bg-white px-6 py-4 lg:col-span-1">
@@ -37,9 +36,6 @@
 					{/each}
 				</div>
 				<div class="flex items-center gap-8">
-					<button class="flex cursor-pointer gap-2 transition duration-150 hover:text-white"
-						><CircleUser /> Log In</button
-					>
 					<button class="flex cursor-pointer gap-2 transition duration-150 hover:text-white">
 						<Search />
 					</button>
@@ -50,7 +46,6 @@
 	</div>
 </div>
 
-<!-- Mobile version -->
 <div class="block lg:hidden">
 	<div class="flex items-center justify-between bg-white px-10 py-10" aria-label="main navigation">
 		<a href="/" aria-label="Ir para a página inicial">
@@ -69,9 +64,12 @@
 				<div class="mr-16 flex items-center justify-between">
 					<h4>Acessos Uteis</h4>
 					<div class="flex gap-8">
-						<button class="flex cursor-pointer gap-2 transition duration-150 hover:text-white"
-							><CircleUser /> Log In</button
+						<a
+							href="/log-in"
+							class="flex cursor-pointer gap-2 transition duration-150 hover:text-white"
 						>
+							<CircleUser /> Log In
+						</a>
 						<button class="flex cursor-pointer gap-2 transition duration-150 hover:text-white">
 							<Search />
 						</button>
@@ -87,9 +85,8 @@
 			{#each navigationItems as item}
 				<a href={item.href}>
 					<div class="mb-8 flex items-center justify-between">
-						<button>
-							<h4>{item.title}</h4>
-						</button>
+						<h4>{item.title}</h4>
+
 						<ChevronRight />
 					</div>
 				</a>

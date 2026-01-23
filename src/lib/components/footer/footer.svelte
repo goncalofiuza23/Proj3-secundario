@@ -49,9 +49,6 @@
 									>Serviços On-line</a
 								>
 							</li>
-							<li>
-								<a href="/mapa-site" class="transition-colors hover:text-primary">Mapa do Site</a>
-							</li>
 						</ul>
 					</div>
 				</div>
