@@ -2,13 +2,13 @@
 	import CircleUser from '@lucide/svelte/icons/circle-user';
 	import Search from '@lucide/svelte/icons/search';
 	import Menu from '@lucide/svelte/icons/menu';
-	import * as Sheet from '$lib/components/ui/sheet/index.ts';
 
 	import type { NavigationItem } from '$lib/types/navigation.ts';
 	import { buttonVariants } from '../ui/button/button.svelte';
 	import LanguageSelect from '../language-select/language-select.svelte';
 	import { Separator } from '../ui/separator/index.js';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import * as Sheet from '../ui/sheet';
 
 	const navigationItems: NavigationItem[] = [
 		{ title: 'Missão', href: '/missao' },

@@ -2,15 +2,15 @@ import type { Payment } from "$lib/types/menu.js";
 import type { ColumnDef } from "@tanstack/table-core";
 export const columns: ColumnDef<Payment>[] = [
     {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "idCartao",
+        header: "ID Cartão",
     },
     {
-        accessorKey: "email",
-        header: "Email",
+        accessorKey: "nome",
+        header: "Nome",
     },
     {
-        accessorKey: "amount",
-        header: "Amount",
+        accessorKey: "Route",
+        header: "Route",
     },
 ];

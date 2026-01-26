@@ -4,7 +4,6 @@ import { pgTable, text, timestamp, serial, integer } from 'drizzle-orm/pg-core';
 // Tabela de Utilizadores (Admin)
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
-	name: text('name'),
 	username: text('username').notNull().unique(),
 	password: text('password').notNull(),
 	isAdmin: integer('is_admin').notNull().default(0),

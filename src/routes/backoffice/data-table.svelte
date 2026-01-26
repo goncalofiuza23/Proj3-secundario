@@ -1,7 +1,10 @@
 <script lang="ts" generics="TData, TValue">
+	import { Button } from '$lib/components/ui/button';
+	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table';
+	import * as Table from '$lib/components/ui/table';
 	import { type ColumnDef, getCoreRowModel } from '@tanstack/table-core';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
+	import Plus from '@lucide/svelte/icons/plus';
+	import { goto } from '$app/navigation';
 
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
@@ -19,6 +22,9 @@
 	});
 </script>
 
+<div class="mb-8 flex justify-end">
+	<Button onclick={() => goto('/backoffice/create')}><Plus /> Adicionar menu</Button>
+</div>
 <div class="rounded-md border">
 	<Table.Root>
 		<Table.Header>

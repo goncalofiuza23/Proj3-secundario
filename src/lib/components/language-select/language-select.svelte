@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.ts';
+	import * as DropdownMenu from '../ui/dropdown-menu';
 </script>
 
 <DropdownMenu.Root>
