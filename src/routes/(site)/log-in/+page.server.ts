@@ -80,7 +80,7 @@ export const actions: Actions = {
         const token = generateSessionToken();
         const session = await createSession(token, user.id);
 
-        setSessionTokenCookie(event.cookies, token, session.expiresAt);
+        setSessionTokenCookie(event.cookies, token);
 
         const next = event.url.searchParams.get('next');
         throw redirect(303, next || '/backoffice');

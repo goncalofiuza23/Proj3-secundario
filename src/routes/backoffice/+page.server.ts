@@ -49,19 +49,53 @@
 //     // Podes devolver dados do utilizador se quiseres
 //     return { user, payments };
 // };
+// ------------------------------------------------------------------------------------------
 
-import type { PageServerLoad } from './$types.js';
-import type { Payment } from '$lib/types/menu.js';
+// -------------------------------------------------------------------------------------------
 
-export const load: PageServerLoad = async ({ locals }) => {
-    const payments: Payment[] = [
-        {
-            id: '33',
-            amount: 3545,
-            status: 'pending',
-            email: 'example@example.com'
-        }
-    ];
+import type { Actions, PageServerLoad } from './$types';
+import { db } from '$lib/server/db';
+import { menuItem } from '$lib/server/db/schema';
+import { asc, eq, desc } from 'drizzle-orm';
+import { fail, redirect } from '@sveltejs/kit';
 
-    return { user: locals.user, payments };
+
+export const load: PageServerLoad = async () => {
+    const items = await db
+        .select({
+            id: menuItem.id,
+            title: menuItem.title,
+            href: menuItem.href,
+            section: menuItem.section,
+            order: menuItem.order,
+            isVisible: menuItem.isVisible
+        })
+        .from(menuItem)
+        .orderBy(asc(menuItem.section), asc(menuItem.order), asc(menuItem.id));
+
+    return { items };
+};
+
+export const actions: Actions = {
+    toggleVisible: async ({ request }) => {
+        const fd = await request.formData();
+
+        const id = Number(fd.get('id'));
+        const visibleRaw = String(fd.get('visible') ?? '');
+
+        if (!Number.isFinite(id)) return fail(400, { message: 'ID inválido' });
+
+        const nextVisible = visibleRaw === '1';
+
+        await db.update(menuItem).set({ isVisible: nextVisible }).where(eq(menuItem.id, id));
+    },
+
+    delete: async ({ request }) => {
+        const fd = await request.formData();
+        const id = Number(fd.get('id'));
+
+        if (!Number.isFinite(id)) return fail(400, { message: 'ID inválido' });
+
+        await db.delete(menuItem).where(eq(menuItem.id, id));
+    }
 };

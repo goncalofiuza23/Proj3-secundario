@@ -19,7 +19,7 @@ export async function createSession(token: string, userId: string) {
 	const session: table.Session = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+		expiresAt: new Date(Date.now() + DAY_IN_MS * 1)
 	};
 	await db.insert(table.session).values(session);
 	return session;
@@ -63,13 +63,12 @@ export async function invalidateSession(sessionId: string) {
 	await db.delete(table.session).where(eq(table.session.id, sessionId));
 }
 
-export function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt: Date) {
+export function setSessionTokenCookie(cookies: Cookies, token: string) {
 	cookies.set(sessionCookieName, token, {
 		path: '/',
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: process.env.NODE_ENV === 'production',
-		expires: expiresAt
+		secure: process.env.NODE_ENV === 'production'
 	});
 }
 

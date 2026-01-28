@@ -30,5 +30,6 @@ export const menuSchema = z.object({
                 'O slug deve conter apenas letras minúsculas e números, podendo usar "-" como separador (ex: menu-teste).'
         })
         .max(50, { message: 'O slug do menu não pode ter mais de 50 caracteres' }),
-    section: z.enum(sections, { message: 'Selecione uma secção válida' })
+    section: z.enum(sections, { message: 'Selecione uma secção válida' }),
+    isVisible: z.coerce.boolean().default(true)
 });

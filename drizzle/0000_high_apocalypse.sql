@@ -3,8 +3,11 @@ CREATE TABLE "menu_item" (
 	"title" text NOT NULL,
 	"href" text NOT NULL,
 	"section" text NOT NULL,
-	"image_url" text NOT NULL,
-	"order" integer DEFAULT 0
+	"order" integer DEFAULT 0,
+	"image_data" "bytea" NOT NULL,
+	"image_mime" text NOT NULL,
+	"image_name" text NOT NULL,
+	"is_visible" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -15,7 +18,6 @@ CREATE TABLE "session" (
 --> statement-breakpoint
 CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
-	"name" text,
 	"username" text NOT NULL,
 	"password" text NOT NULL,
 	"is_admin" integer DEFAULT 0 NOT NULL,
