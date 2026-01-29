@@ -1,58 +1,24 @@
-# Svelte library
+## Manual de utilizador Help_ipvc Localhost
 
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
+1) Pré requisitos:
+    - Node.js
+    - pnpm (Invoke-WebRequest https://get.pnpm.io/install.ps1 -UseBasicParsing | Invoke-Expression) <- Introduzir este comando no terminal
+    - docker desktop
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+2) Abrir o docker, após aberto, confirmar no terminal se o docker está a correr (docker ps) <- Introduzir este comando no terminal
 
-## Creating a project
+3) Criar o ficheiro .env na raiz do projeto e introduzir o seguinte comando: DATABASE_URL="postgres://postgres:projeto3@localhost:5432/help_ipvc"
 
-If you're seeing this, you've probably already done this step. Congrats!
+4) Iniciar a Base de Dados (Docker), utilizando o seguinte comando no terminal na raiz do projeto: docker compose up -d
 
-```sh
-# create a new project in the current directory
-npx sv create
+5) Instalar as dependências do projeto (pnpm install) <- Introduzir este comando no terminal
 
-# create a new project in my-app
-npx sv create my-app
-```
+6) Criar as tabelas (pnpm db:migrate) <- Introduzir este comando no terminal
 
-## Developing
+7) Criar o utilizador Admin, presente no ficheiro seed.ts na raiz do projeto (pnpm tsx seed.ts) <- Introduzir este comando no terminal
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+8) Arrancar o servidor (pnpm dev) <- Introduzir este comando no terminal
 
-```sh
-npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## Manual de utilizador Help_ipvc Servidor da escola 
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
-
-## Building
-
-To build your library:
-
-```sh
-npm pack
-```
-
-To create a production version of your showcase app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```sh
-npm publish
-```

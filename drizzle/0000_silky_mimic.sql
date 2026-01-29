@@ -1,6 +1,7 @@
 CREATE TABLE "menu_item" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"title" text NOT NULL,
+	"title_pt" text NOT NULL,
+	"title_en" text NOT NULL,
 	"href" text NOT NULL,
 	"section" text NOT NULL,
 	"order" integer DEFAULT 0,

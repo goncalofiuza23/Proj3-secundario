@@ -47,12 +47,21 @@
 
 	<Card.Content>
 		<form method="POST" enctype="multipart/form-data" use:enhance>
-			<Form.Field {form} name="title">
+			<Form.Field {form} name="titlePt">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Form.Label>Titulo</Form.Label>
-						<p class="mb-2 text-xs opacity-70">Atual: {data.item.title}</p>
-						<Input {...props} bind:value={$formData.title} />
+						<Form.Label>Titulo (PT)</Form.Label>
+						<Input {...props} bind:value={$formData.titlePt} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+
+			<Form.Field {form} name="titleEn" class="mt-4">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Titulo (EN)</Form.Label>
+						<Input {...props} bind:value={$formData.titleEn} />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
@@ -62,7 +71,6 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label>Slug</Form.Label>
-						<p class="mb-2 text-xs opacity-70">Atual: {data.item.href}</p>
 						<Input {...props} bind:value={$formData.slug} />
 					{/snippet}
 				</Form.Control>
@@ -94,10 +102,6 @@
 					<Form.Control>
 						{#snippet children()}
 							<Form.Label>Secção</Form.Label>
-							<p class="mb-2 text-xs opacity-70">
-								Atual: {sections.find((s) => s.value === data.item.section)?.label ??
-									data.item.section}
-							</p>
 
 							<Select.Root type="single" name="section" bind:value={$formData.section}>
 								<Select.Trigger class="w-full">

@@ -7,11 +7,21 @@ const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const sections = ['servicos_globais', 'servicos_alunos', 'servicos_docentes'] as const;
 
 export const menuSchema = z.object({
-    title: z
+    titlePt: z.
+        string()
+        .trim()
+        .min(1, { message: 'Especifique o título PT' })
+        .max(25, {
+            message: 'O título PT não pode ter mais de 25 caracteres'
+        }),
+
+    titleEn: z
         .string()
         .trim()
-        .min(1, { message: 'Especifique o título do menu' })
-        .max(25, { message: 'O título do menu não pode ter mais de 25 caracteres' }),
+        .min(1, { message: 'Especifique o título EN' })
+        .max(25, {
+            message: 'O título EN não pode ter mais de 25 caracteres'
+        }),
 
     image: z
         .instanceof(File, { message: 'Selecione uma imagem' })

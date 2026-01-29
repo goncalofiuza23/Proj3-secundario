@@ -28,7 +28,8 @@ export const load: PageServerLoad = async ({ params }) => {
     const [item] = await db
         .select({
             id: menuItem.id,
-            title: menuItem.title,
+            titlePt: menuItem.titlePt,
+            titleEn: menuItem.titleEn,
             href: menuItem.href,
             section: menuItem.section,
             isVisible: menuItem.isVisible,
@@ -42,7 +43,8 @@ export const load: PageServerLoad = async ({ params }) => {
 
     const form = await superValidate(zod4(editMenuSchema), {
         defaults: {
-            title: item.title,
+            titlePt: item.titlePt,
+            titleEn: item.titleEn,
             slug: item.href,
             section: coerceSection(item.section),
             isVisible: item.isVisible ?? true
@@ -61,7 +63,8 @@ export const actions: Actions = {
         if (!form.valid) return fail(400, { form });
 
         const update: Record<string, unknown> = {
-            title: form.data.title,
+            titlePt: form.data.titlePt,
+            titleEn: form.data.titleEn,
             href: form.data.slug,
             section: form.data.section,
             isVisible: form.data.isVisible

@@ -29,6 +29,12 @@
 		const path = href.startsWith('/') ? href : `/${href}`;
 		return `${$page.url.origin}${base}${path}`;
 	}
+
+	const SECTION_LABEL: Record<string, string> = {
+		servicos_globais: 'Serviços Globais',
+		servicos_alunos: 'Serviços para Alunos',
+		servicos_docentes: 'Serviços para Docentes'
+	};
 </script>
 
 <div class="flex justify-end">
@@ -65,7 +71,7 @@
 						<EyeOff class="opacity-60" />
 					{/if}
 				</div>
-				<div class="col-span-2">{item.section}</div>
+				<div class="col-span-2">{SECTION_LABEL[item.section]}</div>
 				<div class="col-span-3">
 					<span class="opacity-70">{fullRoute(item.href)}</span>
 				</div>

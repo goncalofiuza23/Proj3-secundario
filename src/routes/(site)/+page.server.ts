@@ -7,7 +7,7 @@ export const load: PageServerLoad = async () => {
     const items = await db
         .select({
             id: menuItem.id,
-            title: menuItem.title,
+            titlePt: menuItem.titlePt,
             href: menuItem.href,
             section: menuItem.section,
             order: menuItem.order,

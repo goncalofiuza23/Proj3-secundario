@@ -15,16 +15,10 @@
 			</button>
 		{/snippet}
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content class="w-56" align="start">
+	<DropdownMenu.Content class="w-30" align="start">
 		<DropdownMenu.Group>
-			<DropdownMenu.Item>
-				PT
-				<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
-			</DropdownMenu.Item>
-			<DropdownMenu.Item>
-				EN
-				<DropdownMenu.Shortcut>⌘B</DropdownMenu.Shortcut>
-			</DropdownMenu.Item>
+			<DropdownMenu.Item>PT</DropdownMenu.Item>
+			<DropdownMenu.Item>EN</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
