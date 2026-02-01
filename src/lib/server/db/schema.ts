@@ -1,10 +1,19 @@
-import { pgTable, text, timestamp, serial, integer, customType, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, serial, integer, customType, boolean, pgEnum, jsonb } from 'drizzle-orm/pg-core';
 
 const byteaType = customType<{ data: Buffer; driverData: Buffer }>({
 	dataType() {
 		return 'bytea';
 	}
 });
+
+export const contentLang = pgEnum("content_lang", ["pt", "en"] as const);
+
+export const contentBlockType = pgEnum("content_block_type", [
+	"title",
+	"text",
+	"image",
+	"table",
+] as const);
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -34,6 +43,34 @@ export const menuItem = pgTable('menu_item', {
 	isVisible: boolean('is_visible').notNull().default(true)
 });
 
+export const menuItemContent = pgTable('menu_item_content', {
+	id: serial('id').primaryKey(),
+
+	menuItemId: integer('menu_item_id')
+		.notNull()
+		.references(() => menuItem.id, { onDelete: 'cascade' }),
+
+	lang: contentLang('lang').notNull(),
+	type: contentBlockType('type').notNull(),
+
+	sortOrder: integer('sort_order').notNull().default(0),
+
+	titleText: text('title_text'),
+
+	textValue: text('text_value'),
+
+	imageData: byteaType('image_data'),
+	imageMime: text('image_mime'),
+	imageName: text('image_name'),
+
+	tableData: jsonb('table_data'),
+
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+});
+
+
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
 export type MenuItem = typeof menuItem.$inferSelect;
+export type MenuItemContent = typeof menuItemContent.$inferSelect;

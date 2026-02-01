@@ -13,6 +13,7 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Eye from '@lucide/svelte/icons/eye';
 	import EyeOff from '@lucide/svelte/icons/eye-off';
+	import SquarePen from '@lucide/svelte/icons/square-pen';
 
 	let { data }: PageProps = $props();
 	let label = $state('personal');
@@ -96,7 +97,27 @@
 							<DropdownMenu.Item>
 								<a href={`/backoffice/edit/${item.id}`} class="flex w-full items-center gap-2">
 									<Pencil />
-									Editar
+									Editar Menu
+								</a>
+							</DropdownMenu.Item>
+
+							<DropdownMenu.Item>
+								<a
+									href={`/backoffice/content/${item.id}/pt`}
+									class="flex w-full items-center gap-2"
+								>
+									<SquarePen class="h-4 w-4" />
+									Editar conteúdo (PT)
+								</a>
+							</DropdownMenu.Item>
+
+							<DropdownMenu.Item>
+								<a
+									href={`/backoffice/content/${item.id}/en`}
+									class="flex w-full items-center gap-2"
+								>
+									<SquarePen class="h-4 w-4" />
+									Editar conteúdo (EN)
 								</a>
 							</DropdownMenu.Item>
 

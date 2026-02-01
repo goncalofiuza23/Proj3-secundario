@@ -5,7 +5,6 @@ import { hash } from 'bcryptjs';
 async function main() {
     console.log('🌱 A verificar base de dados...');
 
-
     const passwordHash = await hash('adminProjeto3', 10);
     const userId = crypto.randomUUID();
 
