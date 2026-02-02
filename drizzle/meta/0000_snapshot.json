@@ -1,5 +1,5 @@
 {
-  "id": "336dd193-04c8-404f-878f-e3acd7ac5d9e",
+  "id": "6604fefe-08e9-4052-ba83-84b5eb10f8c0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -109,8 +109,22 @@
           "primaryKey": false,
           "notNull": true
         },
-        "sort_order": {
-          "name": "sort_order",
+        "row_id": {
+          "name": "row_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "col": {
+          "name": "col",
+          "type": "content_col",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'full'"
+        },
+        "col_order": {
+          "name": "col_order",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -172,6 +186,93 @@
         "menu_item_content_menu_item_id_menu_item_id_fk": {
           "name": "menu_item_content_menu_item_id_menu_item_id_fk",
           "tableFrom": "menu_item_content",
+          "tableTo": "menu_item",
+          "columnsFrom": [
+            "menu_item_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "menu_item_content_row_id_menu_item_row_id_fk": {
+          "name": "menu_item_content_row_id_menu_item_row_id_fk",
+          "tableFrom": "menu_item_content",
+          "tableTo": "menu_item_row",
+          "columnsFrom": [
+            "row_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.menu_item_row": {
+      "name": "menu_item_row",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "menu_item_id": {
+          "name": "menu_item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lang": {
+          "name": "lang",
+          "type": "content_lang",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "row_index": {
+          "name": "row_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cols": {
+          "name": "cols",
+          "type": "menu_item_row_cols",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'1'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "menu_item_row_menu_item_id_menu_item_id_fk": {
+          "name": "menu_item_row_menu_item_id_menu_item_id_fk",
+          "tableFrom": "menu_item_row",
           "tableTo": "menu_item",
           "columnsFrom": [
             "menu_item_id"
@@ -292,12 +393,29 @@
         "table"
       ]
     },
+    "public.content_col": {
+      "name": "content_col",
+      "schema": "public",
+      "values": [
+        "full",
+        "left",
+        "right"
+      ]
+    },
     "public.content_lang": {
       "name": "content_lang",
       "schema": "public",
       "values": [
         "pt",
         "en"
+      ]
+    },
+    "public.menu_item_row_cols": {
+      "name": "menu_item_row_cols",
+      "schema": "public",
+      "values": [
+        "1",
+        "2"
       ]
     }
   },

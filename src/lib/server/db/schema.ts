@@ -15,6 +15,9 @@ export const contentBlockType = pgEnum("content_block_type", [
 	"table",
 ] as const);
 
+export const rowCols = pgEnum('menu_item_row_cols', ['1', '2']);
+export const contentCol = pgEnum('content_col', ['full', 'left', 'right']);
+
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
 	username: text('username').notNull().unique(),
@@ -53,7 +56,12 @@ export const menuItemContent = pgTable('menu_item_content', {
 	lang: contentLang('lang').notNull(),
 	type: contentBlockType('type').notNull(),
 
-	sortOrder: integer('sort_order').notNull().default(0),
+	rowId: integer('row_id')
+		.notNull()
+		.references(() => menuItemRow.id, { onDelete: 'cascade' }),
+
+	col: contentCol('col').notNull().default('full'),
+	colOrder: integer('col_order').notNull().default(0),
 
 	titleText: text('title_text'),
 
@@ -69,8 +77,27 @@ export const menuItemContent = pgTable('menu_item_content', {
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
 
+export const menuItemRow = pgTable('menu_item_row', {
+	id: serial('id').primaryKey(),
+
+	menuItemId: integer('menu_item_id')
+		.notNull()
+		.references(() => menuItem.id, { onDelete: 'cascade' }),
+
+	lang: contentLang('lang').notNull(),
+
+	rowIndex: integer('row_index').notNull(), // 0,1,2,...
+
+	cols: rowCols('cols').notNull().default('1'),
+
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+});
+
+
 
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
 export type MenuItem = typeof menuItem.$inferSelect;
 export type MenuItemContent = typeof menuItemContent.$inferSelect;
+export type MenuItemRow = typeof menuItemRow.$inferSelect;
