@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params }) => {
     const id = Number(params.id);
-    if (!Number.isFinite(id)) throw error(400, 'Invalid id');
+    if (!Number.isFinite(id)) throw error(400, 'Id inválido');
 
     const [row] = await db
         .select({
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ params }) => {
         .where(eq(menuItem.id, id))
         .limit(1);
 
-    if (!row?.imageData || !row.imageMime) throw error(404, 'Image not found');
+    if (!row?.imageData || !row.imageMime) throw error(404, 'Imagem não encontrada');
 
     const bytes = Buffer.isBuffer(row.imageData)
         ? row.imageData

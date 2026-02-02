@@ -1,0 +1,27 @@
+{
+    "nav": {
+        "mission": "Missão",
+        "contactsSI": "Contactos SI"
+    },
+    "home": {
+        "globalServices": "Serviços Globais",
+        "studentServices": "Serviços para Alunos",
+        "teacherServices": "Serviços para Docentes"
+    },
+    "mission": {
+        "title": "Missão",
+        "p1": "Os Serviços de Informática têm como missão zelar pelo bom funcionamento de todas as infraestruturas e tecnologias de suporte aos serviços prestados pelo IPVC, quer estes sejam de natureza interna ou externa.",
+        "p2": "Está também na missão dos Serviços de Informática potenciar as ideias e projetos da comunidade IPVC (interna ou externa), criando condições para que estes possam funcionar e crescer.",
+        "p3": "Os Serviços de Informática são um elemento facilitador na implementação de tecnologias para que a sociedade da informação exista no Alto Minho e para o mundo."
+    },
+    "contacts": {
+        "title": "Contactos de Serviços de Informática",
+        "table": {
+            "unit": "Unidade",
+            "email": "Email"
+        }
+    },
+    "footer": {
+        "contacts": "Contactos"
+    }
+}

@@ -86,7 +86,7 @@ export const menuItemRow = pgTable('menu_item_row', {
 
 	lang: contentLang('lang').notNull(),
 
-	rowIndex: integer('row_index').notNull(), // 0,1,2,...
+	rowIndex: integer('row_index').notNull(),
 
 	cols: rowCols('cols').notNull().default('1'),
 

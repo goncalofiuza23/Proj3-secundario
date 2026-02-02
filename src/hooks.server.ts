@@ -2,6 +2,9 @@ import type { Handle } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
 
 export const handle: Handle = async ({ event, resolve }) => {
+	const langCookie = event.cookies.get('lang');
+	event.locals.lang = langCookie === 'en' ? 'en' : 'pt';
+
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
 
 	if (!sessionToken) {

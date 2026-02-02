@@ -1,18 +1,23 @@
 <script lang="ts">
+	import type { LayoutProps } from './$types';
 	import TopBarMenu from '$lib/components/top-bar/top-bar-menu.svelte';
 	import Footer from '$lib/components/footer/footer.svelte';
 
-	let { children } = $props();
+	let { children, data }: LayoutProps = $props();
 </script>
 
 <svelte:head>
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
 </svelte:head>
 
-<header>
-	<TopBarMenu />
-</header>
+<div class="flex min-h-dvh flex-col">
+	<header>
+		<TopBarMenu />
+	</header>
 
-{@render children()}
+	<main class="flex-1">
+		{@render children()}
+	</main>
 
-<Footer />
+	<Footer lang={data.lang} />
+</div>

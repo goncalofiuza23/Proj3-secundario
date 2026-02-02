@@ -48,7 +48,6 @@
 
 	let rows = $state<Row[]>((data as any).rows ?? []);
 
-	// seleção de destino para “Adicionar”
 	let activeRowId = $state<number | null>(null);
 	let activeCol = $state<Col>('left');
 
@@ -58,16 +57,13 @@
 		}
 	});
 
-	// Dialog editor
 	let editOpen = $state(false);
 	let draft = $state<Block | null>(null);
 	let imageFile = $state<File | null>(null);
 
-	// Delete block dialog
 	let deleteOpen = $state(false);
 	let pendingDeleteId = $state<number | null>(null);
 
-	// Delete row dialog
 	let deleteRowOpen = $state(false);
 	let pendingRowDeleteId = $state<number | null>(null);
 
@@ -172,14 +168,11 @@
 		}));
 	}
 
-	// DnD costuma mandar placeholders — garantimos só ids numéricos
 	function stripPlaceholder(items: unknown[]): Block[] {
 		return (items as any[]).filter(
 			(it) => typeof it?.id === 'number' && Number.isFinite(it.id)
 		) as Block[];
 	}
-
-	// ----------------- ✅ DND DAS LINHAS (ROWS) -----------------
 
 	function stripRowPlaceholder(items: unknown[]): Row[] {
 		return (items as any[]).filter(
@@ -209,8 +202,6 @@
 		rows = items;
 		await reorderRowsServer(items);
 	}
-
-	// --------- SERVER CALLS ---------
 
 	async function addRow(cols: RowCols) {
 		const fd = new FormData();
@@ -331,8 +322,6 @@
 		await fetch('?/reorder', { method: 'POST', body: fd });
 	}
 
-	// --------- DND handlers (por coluna) ---------
-
 	function onConsiderColumn(rowId: number, col: Col, e: CustomEvent) {
 		const detail = e.detail as any;
 		const items = stripPlaceholder(detail?.items ?? []) as Block[];
@@ -354,8 +343,6 @@
 
 		await reorderColumn(rowId, col, items);
 	}
-
-	// --------- TABLE helpers ---------
 
 	function addColumn() {
 		if (!draft) return;
@@ -388,8 +375,6 @@
 		const rows2 = t.rows.filter((_, i) => i !== idx);
 		draft.tableData = { columns: [...t.columns], rows: rows2 };
 	}
-
-	// --------- SAVE ---------
 
 	async function saveDraft() {
 		if (!draft) return;
@@ -438,7 +423,6 @@
 </script>
 
 <div class="grid gap-6 lg:grid-cols-12">
-	<!-- LEFT -->
 	<Card.Root class="lg:col-span-4">
 		<Card.Header>
 			<Card.Title class="text-base">Linhas e Componentes</Card.Title>
@@ -493,7 +477,6 @@
 		</Card.Content>
 	</Card.Root>
 
-	<!-- RIGHT -->
 	<div class="space-y-4 lg:col-span-8">
 		<div class="rounded-md border p-4">
 			<div class="mb-3 text-sm font-medium">Canvas por Linhas</div>
@@ -503,7 +486,6 @@
 					Sem linhas. Cria uma linha do lado esquerdo.
 				</div>
 			{:else}
-				<!-- ✅ DNDZONE DAS LINHAS -->
 				<div
 					use:dndzone={{
 						items: rows,
@@ -518,7 +500,6 @@
 						<Card.Root>
 							<Card.Header class="flex flex-row items-center justify-between gap-2">
 								<div class="flex items-center gap-2">
-									<!-- ✅ HANDLE PARA ARRASTAR A LINHA -->
 									<button
 										type="button"
 										data-row-dnd-handle
@@ -555,7 +536,6 @@
 
 							<Card.Content>
 								{#if row.cols === '1'}
-									<!-- 1 coluna -->
 									<div
 										class="rounded-md border p-3"
 										class:ring-2={activeRowId === row.id && activeCol === 'left'}
@@ -637,9 +617,7 @@
 										{/if}
 									</div>
 								{:else}
-									<!-- 2 colunas -->
 									<div class="grid gap-4 md:grid-cols-2">
-										<!-- LEFT -->
 										<div
 											class="rounded-md border p-3"
 											class:ring-2={activeRowId === row.id && activeCol === 'left'}
@@ -721,7 +699,6 @@
 											{/if}
 										</div>
 
-										<!-- RIGHT -->
 										<div
 											class="rounded-md border p-3"
 											class:ring-2={activeRowId === row.id && activeCol === 'right'}
@@ -813,7 +790,6 @@
 	</div>
 </div>
 
-<!-- EDIT DIALOG -->
 <Dialog.Root bind:open={editOpen}>
 	<Dialog.Content class="sm:max-w-lg">
 		<Dialog.Header>
@@ -937,7 +913,6 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-<!-- DELETE BLOCK DIALOG -->
 <AlertDialog.Root bind:open={deleteOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
@@ -973,7 +948,6 @@
 	</AlertDialog.Content>
 </AlertDialog.Root>
 
-<!-- DELETE ROW DIALOG -->
 <AlertDialog.Root bind:open={deleteRowOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>

@@ -16,7 +16,7 @@ function guessMime(name?: string | null) {
 
 export const GET: RequestHandler = async ({ params }) => {
     const id = Number(params.id);
-    if (!Number.isFinite(id) || id <= 0) throw error(400, 'Invalid id');
+    if (!Number.isFinite(id) || id <= 0) throw error(400, 'Id inválido');
 
     const [row] = await db
         .select({
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ params }) => {
         .where(eq(menuItemContent.id, id))
         .limit(1);
 
-    if (!row?.imageData) throw error(404, 'Image not found');
+    if (!row?.imageData) throw error(404, 'Imagem não encontrada');
 
     const v: unknown = row.imageData;
 
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ params }) => {
     if (Buffer.isBuffer(v)) buf = v;
     else if (v instanceof Uint8Array) buf = Buffer.from(v);
     else if (v instanceof ArrayBuffer) buf = Buffer.from(v);
-    else if (typeof v === 'string') buf = Buffer.from(v); // (se algum dia vier string)
+    else if (typeof v === 'string') buf = Buffer.from(v);
     else buf = Buffer.from(v as any);
 
     const mime =

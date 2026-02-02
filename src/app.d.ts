@@ -5,6 +5,7 @@ declare global {
 		interface Locals {
 			user: Pick<User, 'id' | 'username' | 'isAdmin'> | null;
 			session: Session | null;
+			lang: 'pt' | 'en';
 		}
 	}
 }

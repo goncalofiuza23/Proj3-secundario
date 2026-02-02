@@ -4,21 +4,16 @@ import { db } from '$lib/server/db';
 import { menuItem, menuItemRow, menuItemContent } from '$lib/server/db/schema';
 import { and, asc, eq } from 'drizzle-orm';
 
-function getLangFromRequest(request: Request): 'pt' | 'en' {
-    const h = request.headers.get('accept-language') ?? '';
-    return h.toLowerCase().startsWith('en') ? 'en' : 'pt';
-}
-
-export const load: PageServerLoad = async ({ params, request }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
     const slug = params.slug;
 
-    // 1) menu pelo href (=slug)
     const [menu] = await db
         .select({
             id: menuItem.id,
             titlePt: menuItem.titlePt,
             titleEn: menuItem.titleEn,
             href: menuItem.href,
+            section: menuItem.section,
             isVisible: menuItem.isVisible
         })
         .from(menuItem)
@@ -27,10 +22,8 @@ export const load: PageServerLoad = async ({ params, request }) => {
 
     if (!menu || !menu.isVisible) throw error(404, 'Página não encontrada');
 
-    // 2) idioma
-    const lang = getLangFromRequest(request);
+    const lang = (locals.lang ?? 'pt') as 'pt' | 'en';
 
-    // 3) rows deste menu+lang
     const rowsDb = await db
         .select({
             id: menuItemRow.id,
@@ -41,7 +34,6 @@ export const load: PageServerLoad = async ({ params, request }) => {
         .where(and(eq(menuItemRow.menuItemId, menu.id), eq(menuItemRow.lang, lang)))
         .orderBy(asc(menuItemRow.rowIndex), asc(menuItemRow.id));
 
-    // 4) blocks deste menu+lang
     const blocksDb = await db
         .select({
             id: menuItemContent.id,
@@ -64,7 +56,6 @@ export const load: PageServerLoad = async ({ params, request }) => {
             asc(menuItemContent.id)
         );
 
-    // 5) agrupar por rowId
     const byRow = new Map<number, typeof blocksDb>();
     for (const b of blocksDb) {
         const arr = byRow.get(b.rowId);
@@ -74,16 +65,12 @@ export const load: PageServerLoad = async ({ params, request }) => {
 
     const rows = rowsDb.map((r) => {
         const rowBlocks = byRow.get(r.id) ?? [];
-
-        const leftBlocks = rowBlocks.filter((b) => b.col === 'left');
-        const rightBlocks = rowBlocks.filter((b) => b.col === 'right');
-
         return {
             id: r.id,
             rowIndex: r.rowIndex,
             cols: r.cols,
-            leftBlocks,
-            rightBlocks
+            leftBlocks: rowBlocks.filter((b) => b.col === 'left'),
+            rightBlocks: rowBlocks.filter((b) => b.col === 'right')
         };
     });
 

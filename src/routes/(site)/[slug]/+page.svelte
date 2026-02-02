@@ -1,9 +1,15 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
+	import TopBarGeneric from '$lib/components/top-bar/top-bar-generic.svelte';
+	import TopBarClass from '$lib/components/top-bar/top-bar-class.svelte';
+
+	import pt from '$lib/translations/pt.json';
+	import en from '$lib/translations/en.json';
 
 	type BlockType = 'title' | 'text' | 'image' | 'table';
 	type Col = 'left' | 'right';
 	type RowCols = '1' | '2';
+	type Lang = 'pt' | 'en';
 
 	type TableData = { columns: string[]; rows: string[][] };
 
@@ -28,12 +34,35 @@
 		rightBlocks: Block[];
 	};
 
+	type MenuSection = 'servicos_globais' | 'servicos_alunos' | 'servicos_docentes';
+
 	let { data }: PageProps = $props();
+
 	const { menu, lang, rows } = data as unknown as {
-		menu: any;
-		lang: 'pt' | 'en';
+		menu: {
+			id: number;
+			titlePt: string;
+			titleEn: string;
+			href: string;
+			section: MenuSection;
+			isVisible: boolean;
+		};
+		lang: Lang;
 		rows: Row[];
 	};
+
+	const dict = lang === 'en' ? en : pt;
+
+	const sectionTitle =
+		menu.section === 'servicos_alunos'
+			? dict.home.studentServices
+			: menu.section === 'servicos_docentes'
+				? dict.home.teacherServices
+				: dict.home.globalServices;
+
+	const isStudent = menu.section === 'servicos_alunos';
+	const sectionBg = isStudent ? 'primary' : 'foreground';
+	const menuBg = isStudent ? 'foreground' : 'primary';
 
 	function getTable(t?: TableData | null): TableData | null {
 		if (!t) return null;
@@ -42,20 +71,18 @@
 	}
 </script>
 
-<!-- se tens navbar fixed no layout, mete padding-top aqui (ex: pt-20) -->
-<div class="mx-auto max-w-5xl px-4 py-8">
-	<h1 class="text-2xl font-semibold">
-		{lang === 'en' ? menu.titleEn : menu.titlePt}
-	</h1>
+<TopBarGeneric text={sectionTitle} bgColor={sectionBg} />
 
+<TopBarClass text={lang === 'en' ? menu.titleEn : menu.titlePt} bgColor={menuBg} />
+
+<div class="mx-auto max-w-5xl px-4 py-8">
 	<div class="mt-8 space-y-10">
 		{#each rows as row (row.id)}
 			{#if row.cols === '1'}
-				<!-- 1 coluna -->
 				<div class="space-y-6">
 					{#each row.leftBlocks as block (block.id)}
 						{#if block.type === 'title'}
-							<h2 class="text-xl font-semibold">{block.titleText}</h2>
+							<h2 class="text-xl font-bold text-primary">{block.titleText}</h2>
 						{:else if block.type === 'text'}
 							<p class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">
 								{block.textValue}
@@ -95,13 +122,11 @@
 					{/each}
 				</div>
 			{:else}
-				<!-- 2 colunas -->
 				<div class="grid gap-8 md:grid-cols-2">
-					<!-- LEFT -->
 					<div class="min-w-0 space-y-6">
 						{#each row.leftBlocks as block (block.id)}
 							{#if block.type === 'title'}
-								<h2 class="text-xl font-semibold">{block.titleText}</h2>
+								<h2 class="text-xl font-bold text-primary">{block.titleText}</h2>
 							{:else if block.type === 'text'}
 								<p class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">
 									{block.textValue}
@@ -141,7 +166,6 @@
 						{/each}
 					</div>
 
-					<!-- RIGHT -->
 					<div class="min-w-0 space-y-6">
 						{#each row.rightBlocks as block (block.id)}
 							{#if block.type === 'title'}

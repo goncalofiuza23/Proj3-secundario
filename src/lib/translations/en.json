@@ -1,0 +1,27 @@
+{
+    "nav": {
+        "mission": "Mission",
+        "contactsSI": "Contacts IS"
+    },
+    "home": {
+        "globalServices": "Global services",
+        "studentServices": "Student services",
+        "teacherServices": "Teacher services"
+    },
+    "mission": {
+        "title": "Mission",
+        "p1": "The Information Technology Services’ mission is to ensure the proper functioning of all infrastructure and technologies that support the services provided by IPVC, whether internal or external.",
+        "p2": "It is also part of the IT Services’ mission to foster the ideas and projects of the IPVC community (internal or external), creating the conditions for them to operate and grow.",
+        "p3": "The IT Services are a facilitating element in the implementation of technologies so that the information society exists in Alto Minho and for the world."
+    },
+    "contacts": {
+        "title": "IT Services Contacts",
+        "table": {
+            "unit": "Unit",
+            "email": "Email"
+        }
+    },
+    "footer": {
+        "contacts": "Contacts"
+    }
+}
