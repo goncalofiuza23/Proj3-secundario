@@ -1,4 +1,4 @@
-CREATE TYPE "public"."content_block_type" AS ENUM('title', 'text', 'image', 'table');--> statement-breakpoint
+CREATE TYPE "public"."content_block_type" AS ENUM('title', 'subtitle', 'text', 'boxText', 'image', 'table', 'file');--> statement-breakpoint
 CREATE TYPE "public"."content_col" AS ENUM('full', 'left', 'right');--> statement-breakpoint
 CREATE TYPE "public"."content_lang" AS ENUM('pt', 'en');--> statement-breakpoint
 CREATE TYPE "public"."menu_item_row_cols" AS ENUM('1', '2');--> statement-breakpoint
@@ -28,7 +28,12 @@ CREATE TABLE "menu_item_content" (
 	"image_data" "bytea",
 	"image_mime" text,
 	"image_name" text,
+	"image_width" integer DEFAULT 100,
+	"image_align" text DEFAULT 'center',
 	"table_data" jsonb,
+	"file_data" "bytea",
+	"file_mime" text,
+	"file_name" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );

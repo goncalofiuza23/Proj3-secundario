@@ -6,7 +6,7 @@
 	import pt from '$lib/translations/pt.json';
 	import en from '$lib/translations/en.json';
 
-	type BlockType = 'title' | 'text' | 'image' | 'table';
+	type BlockType = 'title' | 'subtitle' | 'text' | 'boxText' | 'image' | 'table' | 'file';
 	type Col = 'left' | 'right';
 	type RowCols = '1' | '2';
 	type Lang = 'pt' | 'en';
@@ -23,7 +23,11 @@
 		textValue?: string | null;
 		imageName?: string | null;
 		imageMime?: string | null;
+		imageWidth?: number | null;
+		imageAlign?: 'left' | 'center' | 'right' | null;
 		tableData?: TableData | null;
+		fileName?: string | null;
+		fileMime?: string | null;
 	};
 
 	type Row = {
@@ -69,10 +73,13 @@
 		if (!Array.isArray(t.columns) || !Array.isArray(t.rows)) return null;
 		return t;
 	}
+
+	function fileUrl(blockId: number) {
+		return `/content-file/${blockId}`;
+	}
 </script>
 
 <TopBarGeneric text={sectionTitle} bgColor={sectionBg} />
-
 <TopBarClass text={lang === 'en' ? menu.titleEn : menu.titlePt} bgColor={menuBg} />
 
 <div class="mx-auto max-w-5xl px-4 py-8">
@@ -83,17 +90,44 @@
 					{#each row.leftBlocks as block (block.id)}
 						{#if block.type === 'title'}
 							<h2 class="text-xl font-bold text-primary">{block.titleText}</h2>
+						{:else if block.type === 'subtitle'}
+							<h3 class="text-lg font-semibold text-foreground">{block.titleText}</h3>
 						{:else if block.type === 'text'}
 							<p class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">
 								{block.textValue}
 							</p>
+						{:else if block.type === 'boxText'}
+							<div class="rounded-md border bg-gray-50 p-4">
+								<p class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">
+									{block.textValue}
+								</p>
+							</div>
 						{:else if block.type === 'image'}
-							<img
-								class="h-auto w-full max-w-full rounded-md border object-contain"
-								src={`/content-image/${block.id}`}
-								alt={block.imageName ?? 'Imagem'}
-								loading="lazy"
-							/>
+							{@const width = block.imageWidth ?? 100}
+							{@const align = block.imageAlign ?? 'center'}
+
+							<div
+								class="w-full"
+								style={`display:flex; justify-content:${
+									align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center'
+								};`}
+							>
+								<img
+									src={`/content-image/${block.id}`}
+									alt={block.imageName ?? 'Imagem'}
+									class="h-auto max-w-full rounded-md border object-contain"
+									style={`width:${width}%;`}
+									loading="lazy"
+								/>
+							</div>
+						{:else if block.type === 'file'}
+							<a
+								href={fileUrl(block.id)}
+								class="inline-flex items-center gap-2 text-primary underline underline-offset-4"
+								download={block.fileName ?? undefined}
+							>
+								Descarregar o ficheiro {block.fileName ?? ''}
+							</a>
 						{:else if block.type === 'table'}
 							{@const t = getTable(block.tableData)}
 							{#if t}
@@ -127,17 +161,46 @@
 						{#each row.leftBlocks as block (block.id)}
 							{#if block.type === 'title'}
 								<h2 class="text-xl font-bold text-primary">{block.titleText}</h2>
+							{:else if block.type === 'subtitle'}
+								<h3 class="text-lg font-semibold text-foreground">{block.titleText}</h3>
 							{:else if block.type === 'text'}
 								<p class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">
 									{block.textValue}
 								</p>
+							{:else if block.type === 'boxText'}
+								<div class="rounded-md border bg-gray-50 p-4">
+									<p
+										class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap"
+									>
+										{block.textValue}
+									</p>
+								</div>
 							{:else if block.type === 'image'}
-								<img
-									class="h-auto w-full max-w-full rounded-md border object-contain"
-									src={`/content-image/${block.id}`}
-									alt={block.imageName ?? 'Imagem'}
-									loading="lazy"
-								/>
+								{@const width = block.imageWidth ?? 100}
+								{@const align = block.imageAlign ?? 'center'}
+
+								<div
+									class="w-full"
+									style={`display:flex; justify-content:${
+										align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center'
+									};`}
+								>
+									<img
+										src={`/content-image/${block.id}`}
+										alt={block.imageName ?? 'Imagem'}
+										class="h-auto max-w-full rounded-md border object-contain"
+										style={`width:${width}%;`}
+										loading="lazy"
+									/>
+								</div>
+							{:else if block.type === 'file'}
+								<a
+									href={fileUrl(block.id)}
+									class="inline-flex items-center gap-2 text-primary underline underline-offset-4"
+									download={block.fileName ?? undefined}
+								>
+									Descarregar o ficheiro {block.fileName ?? ''}
+								</a>
 							{:else if block.type === 'table'}
 								{@const t = getTable(block.tableData)}
 								{#if t}
@@ -169,18 +232,47 @@
 					<div class="min-w-0 space-y-6">
 						{#each row.rightBlocks as block (block.id)}
 							{#if block.type === 'title'}
-								<h2 class="text-xl font-semibold">{block.titleText}</h2>
+								<h2 class="text-xl font-bold text-primary">{block.titleText}</h2>
+							{:else if block.type === 'subtitle'}
+								<h3 class="text-lg font-semibold text-foreground">{block.titleText}</h3>
 							{:else if block.type === 'text'}
 								<p class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">
 									{block.textValue}
 								</p>
+							{:else if block.type === 'boxText'}
+								<div class="rounded-md border bg-gray-50 p-4">
+									<p
+										class="leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap"
+									>
+										{block.textValue}
+									</p>
+								</div>
 							{:else if block.type === 'image'}
-								<img
-									class="h-auto w-full max-w-full rounded-md border object-contain"
-									src={`/content-image/${block.id}`}
-									alt={block.imageName ?? 'Imagem'}
-									loading="lazy"
-								/>
+								{@const width = block.imageWidth ?? 100}
+								{@const align = block.imageAlign ?? 'center'}
+
+								<div
+									class="w-full"
+									style={`display:flex; justify-content:${
+										align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center'
+									};`}
+								>
+									<img
+										src={`/content-image/${block.id}`}
+										alt={block.imageName ?? 'Imagem'}
+										class="h-auto max-w-full rounded-md border object-contain"
+										style={`width:${width}%;`}
+										loading="lazy"
+									/>
+								</div>
+							{:else if block.type === 'file'}
+								<a
+									href={fileUrl(block.id)}
+									class="inline-flex items-center gap-2 text-primary underline underline-offset-4"
+									download={block.fileName ?? undefined}
+								>
+									Descarregar o ficheiro {block.fileName ?? ''}
+								</a>
 							{:else if block.type === 'table'}
 								{@const t = getTable(block.tableData)}
 								{#if t}

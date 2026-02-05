@@ -1,5 +1,5 @@
 {
-  "id": "6604fefe-08e9-4052-ba83-84b5eb10f8c0",
+  "id": "c0c01697-6173-4fcf-bfc2-7adbef2f8a9e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -160,9 +160,41 @@
           "primaryKey": false,
           "notNull": false
         },
+        "image_width": {
+          "name": "image_width",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 100
+        },
+        "image_align": {
+          "name": "image_align",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'center'"
+        },
         "table_data": {
           "name": "table_data",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "file_data": {
+          "name": "file_data",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "file_mime": {
+          "name": "file_mime",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -388,9 +420,12 @@
       "schema": "public",
       "values": [
         "title",
+        "subtitle",
         "text",
+        "boxText",
         "image",
-        "table"
+        "table",
+        "file"
       ]
     },
     "public.content_col": {

@@ -45,7 +45,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
             textValue: menuItemContent.textValue,
             imageName: menuItemContent.imageName,
             imageMime: menuItemContent.imageMime,
-            tableData: menuItemContent.tableData
+            imageWidth: menuItemContent.imageWidth,
+            imageAlign: menuItemContent.imageAlign,
+            tableData: menuItemContent.tableData,
+            fileName: menuItemContent.fileName,
+            fileMime: menuItemContent.fileMime
         })
         .from(menuItemContent)
         .where(and(eq(menuItemContent.menuItemId, menu.id), eq(menuItemContent.lang, lang)))
@@ -65,12 +69,21 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
     const rows = rowsDb.map((r) => {
         const rowBlocks = byRow.get(r.id) ?? [];
+
+        const leftBlocks = rowBlocks
+            .filter((b) => b.col === 'left')
+            .sort((a, b) => (a.colOrder ?? 0) - (b.colOrder ?? 0));
+
+        const rightBlocks = rowBlocks
+            .filter((b) => b.col === 'right')
+            .sort((a, b) => (a.colOrder ?? 0) - (b.colOrder ?? 0));
+
         return {
             id: r.id,
             rowIndex: r.rowIndex,
             cols: r.cols,
-            leftBlocks: rowBlocks.filter((b) => b.col === 'left'),
-            rightBlocks: rowBlocks.filter((b) => b.col === 'right')
+            leftBlocks,
+            rightBlocks
         };
     });
 

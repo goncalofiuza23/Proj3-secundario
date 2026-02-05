@@ -1,4 +1,3 @@
-// src/routes/backoffice/content/[menuItemId]/[lang]/+page.server.ts
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
@@ -16,8 +15,8 @@ import z from 'zod/v4';
 
 type Lang = (typeof contentLang.enumValues)[number];
 type BlockType = (typeof contentBlockType.enumValues)[number];
-type Col = (typeof contentCol.enumValues)[number]; // 'left' | 'right'
-type RowCols = (typeof rowCols.enumValues)[number]; // '1' | '2'
+type Col = (typeof contentCol.enumValues)[number];
+type RowCols = (typeof rowCols.enumValues)[number];
 
 const LangSchema = z.enum(contentLang.enumValues);
 const TypeSchema = z.enum(contentBlockType.enumValues);
@@ -107,7 +106,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
             textValue: menuItemContent.textValue,
             imageMime: menuItemContent.imageMime,
             imageName: menuItemContent.imageName,
-            tableData: menuItemContent.tableData
+            imageWidth: menuItemContent.imageWidth,
+            imageAlign: menuItemContent.imageAlign,
+            tableData: menuItemContent.tableData,
+            fileMime: menuItemContent.fileMime,
+            fileName: menuItemContent.fileName
         })
         .from(menuItemContent)
         .where(and(eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)))
@@ -118,7 +121,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
             asc(menuItemContent.id)
         );
 
-    // agrupar por rowId
     const byRow = new Map<number, typeof blocksDb>();
     for (const b of blocksDb) {
         const rid = b.rowId;
@@ -151,7 +153,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 };
 
 export const actions: Actions = {
-    // ✅ criar linha 1col ou 2col
     addRow: async ({ request, params, locals }) => {
         if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
 
@@ -189,7 +190,6 @@ export const actions: Actions = {
         return { success: true, row };
     },
 
-    // ✅ mover LINHAS por drag & drop
     reorderRows: async ({ request, params, locals }) => {
         if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
 
@@ -212,10 +212,7 @@ export const actions: Actions = {
                 .where(and(eq(menuItemRow.menuItemId, menuItemId), eq(menuItemRow.lang, lang)));
 
             const allowed = new Set(existing.map((r) => r.id));
-
-            // se preferires permitir reorder parcial, remove esta linha
             if (existing.length !== ids.length) throw error(400, 'orderedRowIds incompleto');
-
             if (!ids.every((id) => allowed.has(id))) throw error(400, 'IDs inválidos para este menu/lang');
 
             for (let i = 0; i < ids.length; i++) {
@@ -231,7 +228,6 @@ export const actions: Actions = {
         return { success: true };
     },
 
-    // ✅ apagar linha inteira (a "caixa")
     deleteRow: async ({ request, params, locals }) => {
         if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
 
@@ -246,7 +242,11 @@ export const actions: Actions = {
             await tx
                 .delete(menuItemRow)
                 .where(
-                    and(eq(menuItemRow.id, rowId), eq(menuItemRow.menuItemId, menuItemId), eq(menuItemRow.lang, lang))
+                    and(
+                        eq(menuItemRow.id, rowId),
+                        eq(menuItemRow.menuItemId, menuItemId),
+                        eq(menuItemRow.lang, lang)
+                    )
                 );
 
             await resequenceRowIndexes(tx, menuItemId, lang);
@@ -255,7 +255,6 @@ export const actions: Actions = {
         return { success: true, deletedRowId: rowId };
     },
 
-    // ✅ adicionar bloco numa row/col
     add: async ({ request, params, locals }) => {
         if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
 
@@ -300,8 +299,13 @@ export const actions: Actions = {
                 col,
                 colOrder: nextOrder,
                 type,
-                titleText: type === 'title' ? 'Novo título' : null,
-                textValue: type === 'text' ? '' : null,
+                titleText:
+                    type === 'title' || type === 'subtitle'
+                        ? type === 'subtitle'
+                            ? 'Novo subtítulo'
+                            : 'Novo título'
+                        : null,
+                textValue: type === 'text' || type === 'boxText' ? '' : null,
                 tableData: type === 'table' ? { columns: ['Coluna 1'], rows: [['']] } : null,
                 updatedAt: new Date()
             })
@@ -315,13 +319,16 @@ export const actions: Actions = {
                 textValue: menuItemContent.textValue,
                 imageName: menuItemContent.imageName,
                 imageMime: menuItemContent.imageMime,
-                tableData: menuItemContent.tableData
+                imageWidth: menuItemContent.imageWidth,
+                imageAlign: menuItemContent.imageAlign,
+                tableData: menuItemContent.tableData,
+                fileName: menuItemContent.fileName,
+                fileMime: menuItemContent.fileMime
             });
 
         return { success: true, block };
     },
 
-    // ✅ apagar bloco
     delete: async ({ request, params, locals }) => {
         if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
 
@@ -349,7 +356,6 @@ export const actions: Actions = {
         return { success: true, deletedId: blockId };
     },
 
-    // ✅ reorder por coluna dentro da row
     reorder: async ({ request, params, locals }) => {
         if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
 
@@ -365,34 +371,20 @@ export const actions: Actions = {
         if (!colParsed.success) return fail(400, { message: 'col inválido' });
         const col = colParsed.data as Col;
 
-        const ids = fd
-            .getAll('orderedIds')
-            .map((v) => Number(v))
-            .filter((n) => Number.isFinite(n) && n > 0);
-
+        const ids = fd.getAll('orderedIds').map((v) => Number(v)).filter((n) => Number.isFinite(n) && n > 0);
         if (ids.length === 0) return fail(400, { message: 'orderedIds vazio' });
 
         await db.transaction(async (tx) => {
             const existing = await tx
                 .select({ id: menuItemContent.id })
                 .from(menuItemContent)
-                .where(
-                    and(
-                        eq(menuItemContent.menuItemId, menuItemId),
-                        eq(menuItemContent.lang, lang),
-                        eq(menuItemContent.rowId, rowId),
-                        eq(menuItemContent.col, col)
-                    )
-                );
+                .where(and(eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang), eq(menuItemContent.rowId, rowId), eq(menuItemContent.col, col)));
 
             const allowed = new Set(existing.map((r) => r.id));
             if (!ids.every((id) => allowed.has(id))) throw error(400, 'IDs inválidos para esta coluna');
 
             for (let i = 0; i < ids.length; i++) {
-                await tx
-                    .update(menuItemContent)
-                    .set({ colOrder: i, updatedAt: new Date() })
-                    .where(eq(menuItemContent.id, ids[i]));
+                await tx.update(menuItemContent).set({ colOrder: i, updatedAt: new Date() }).where(eq(menuItemContent.id, ids[i]));
             }
 
             await resequenceColOrders(tx, rowId, col);
@@ -412,8 +404,7 @@ export const actions: Actions = {
 
         const titleText = String(fd.get('titleText') ?? '').trim();
 
-        await db
-            .update(menuItemContent)
+        await db.update(menuItemContent)
             .set({ titleText, updatedAt: new Date() })
             .where(and(eq(menuItemContent.id, blockId), eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)));
 
@@ -431,8 +422,7 @@ export const actions: Actions = {
 
         const textValue = String(fd.get('textValue') ?? '');
 
-        await db
-            .update(menuItemContent)
+        await db.update(menuItemContent)
             .set({ textValue, updatedAt: new Date() })
             .where(and(eq(menuItemContent.id, blockId), eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)));
 
@@ -453,8 +443,7 @@ export const actions: Actions = {
 
         const imageData = Buffer.from(await file.arrayBuffer());
 
-        await db
-            .update(menuItemContent)
+        await db.update(menuItemContent)
             .set({
                 imageData,
                 imageMime: file.type,
@@ -464,6 +453,29 @@ export const actions: Actions = {
             .where(and(eq(menuItemContent.id, blockId), eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)));
 
         return { success: true };
+    },
+
+    updateImageMeta: async ({ request, params, locals }) => {
+        if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
+
+        const menuItemId = parseId(params.menuItemId);
+        const lang = LangSchema.parse(params.lang) as Lang;
+
+        const fd = await request.formData();
+        const blockId = Number(fd.get('blockId'));
+        if (!Number.isFinite(blockId) || blockId <= 0) return fail(400, { message: 'blockId inválido' });
+
+        const widthRaw = Number(fd.get('imageWidth'));
+        const alignRaw = String(fd.get('imageAlign') ?? 'center');
+
+        const width = Number.isFinite(widthRaw) ? Math.min(100, Math.max(10, widthRaw)) : 100;
+        const align = ['left', 'center', 'right'].includes(alignRaw) ? alignRaw : 'center';
+
+        await db.update(menuItemContent)
+            .set({ imageWidth: width, imageAlign: align, updatedAt: new Date() })
+            .where(and(eq(menuItemContent.id, blockId), eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)));
+
+        return { success: true, imageWidth: width, imageAlign: align };
     },
 
     updateTable: async ({ request, params, locals }) => {
@@ -486,9 +498,34 @@ export const actions: Actions = {
         const parsed = TableSchema.safeParse(tableData);
         if (!parsed.success) return fail(400, { message: 'Formato de tabela inválido' });
 
-        await db
-            .update(menuItemContent)
+        await db.update(menuItemContent)
             .set({ tableData: parsed.data as any, updatedAt: new Date() })
+            .where(and(eq(menuItemContent.id, blockId), eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)));
+
+        return { success: true };
+    },
+
+    updateFile: async ({ request, params, locals }) => {
+        if (!locals.user || locals.user.isAdmin !== 1) throw redirect(303, '/log-in');
+        const menuItemId = parseId(params.menuItemId);
+        const lang = LangSchema.parse(params.lang) as Lang;
+
+        const fd = await request.formData();
+        const blockId = Number(fd.get('blockId'));
+        if (!Number.isFinite(blockId) || blockId <= 0) return fail(400, { message: 'blockId inválido' });
+
+        const file = fd.get('file');
+        if (!(file instanceof File) || file.size === 0) return fail(400, { message: 'Ficheiro inválido' });
+
+        const fileData = Buffer.from(await file.arrayBuffer());
+
+        await db.update(menuItemContent)
+            .set({
+                fileData,
+                fileMime: file.type,
+                fileName: file.name,
+                updatedAt: new Date()
+            })
             .where(and(eq(menuItemContent.id, blockId), eq(menuItemContent.menuItemId, menuItemId), eq(menuItemContent.lang, lang)));
 
         return { success: true };

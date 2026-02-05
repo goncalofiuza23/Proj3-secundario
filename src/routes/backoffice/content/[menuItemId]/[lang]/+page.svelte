@@ -14,11 +14,14 @@
 	import GripVertical from '@lucide/svelte/icons/grip-vertical';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 
+	import FileUp from '@lucide/svelte/icons/file-up';
+	import TextQuote from '@lucide/svelte/icons/text-quote';
+
 	import { dndzone } from 'svelte-dnd-action';
 	import { deserialize } from '$app/forms';
 
 	type TableData = { columns: string[]; rows: string[][] };
-	type BlockType = 'title' | 'text' | 'image' | 'table';
+	type BlockType = 'title' | 'subtitle' | 'text' | 'boxText' | 'image' | 'table' | 'file';
 	type Col = 'left' | 'right';
 	type RowCols = '1' | '2';
 
@@ -32,7 +35,11 @@
 		textValue?: string | null;
 		imageName?: string | null;
 		imageMime?: string | null;
+		imageWidth?: number | null;
+		imageAlign?: string | null;
 		tableData?: any;
+		fileName?: string | null;
+		fileMime?: string | null;
 	};
 
 	type Row = {
@@ -60,6 +67,7 @@
 	let editOpen = $state(false);
 	let draft = $state<Block | null>(null);
 	let imageFile = $state<File | null>(null);
+	let uploadFile = $state<File | null>(null);
 
 	let deleteOpen = $state(false);
 	let pendingDeleteId = $state<number | null>(null);
@@ -68,7 +76,19 @@
 	let pendingRowDeleteId = $state<number | null>(null);
 
 	function typeLabel(t: BlockType) {
-		return t === 'title' ? 'Título' : t === 'text' ? 'Texto' : t === 'image' ? 'Imagem' : 'Tabela';
+		return t === 'title'
+			? 'Título'
+			: t === 'subtitle'
+				? 'Subtítulo'
+				: t === 'text'
+					? 'Texto'
+					: t === 'boxText'
+						? 'Box Texto'
+						: t === 'image'
+							? 'Imagem'
+							: t === 'file'
+								? 'Ficheiro'
+								: 'Tabela';
 	}
 
 	function safeClone<T>(obj: T): T {
@@ -98,6 +118,7 @@
 	function openEditor(block: Block) {
 		draft = safeClone(block);
 		imageFile = null;
+		uploadFile = null;
 
 		if (draft.type === 'table') {
 			draft.tableData = ensureTableData(draft.tableData);
@@ -110,6 +131,7 @@
 		editOpen = false;
 		draft = null;
 		imageFile = null;
+		uploadFile = null;
 	}
 
 	function askDelete(blockId: number) {
@@ -182,6 +204,26 @@
 
 	function normalizeRowIndexes(list: Row[]): Row[] {
 		return list.map((r, i) => ({ ...r, rowIndex: i }));
+	}
+
+	async function saveImageMeta() {
+		if (!draft || draft.type !== 'image') return;
+
+		const fd = new FormData();
+		fd.set('blockId', String(draft.id));
+		fd.set('imageWidth', String(draft.imageWidth ?? 100));
+		fd.set('imageAlign', String(draft.imageAlign ?? 'center'));
+
+		const res = await fetch('?/updateImageMeta', { method: 'POST', body: fd });
+		if (!res.ok) return;
+
+		replaceBlockLocal({
+			id: draft.id,
+			imageWidth: draft.imageWidth ?? 100,
+			imageAlign: draft.imageAlign ?? 'center'
+		});
+
+		cancelEditor();
 	}
 
 	async function reorderRowsServer(items: Row[]) {
@@ -379,7 +421,7 @@
 	async function saveDraft() {
 		if (!draft) return;
 
-		if (draft.type === 'title') {
+		if (draft.type === 'title' || draft.type === 'subtitle') {
 			const fd = new FormData();
 			fd.set('blockId', String(draft.id));
 			fd.set('titleText', draft.titleText ?? '');
@@ -387,7 +429,7 @@
 			if (res.ok) replaceBlockLocal({ id: draft.id, titleText: draft.titleText ?? '' });
 		}
 
-		if (draft.type === 'text') {
+		if (draft.type === 'text' || draft.type === 'boxText') {
 			const fd = new FormData();
 			fd.set('blockId', String(draft.id));
 			fd.set('textValue', draft.textValue ?? '');
@@ -418,6 +460,21 @@
 		if (!res.ok) return;
 
 		replaceBlockLocal({ id: draft.id, imageName: imageFile.name, imageMime: imageFile.type });
+		cancelEditor();
+	}
+
+	async function saveFile() {
+		if (!draft || draft.type !== 'file') return;
+		if (!uploadFile) return;
+
+		const fd = new FormData();
+		fd.set('blockId', String(draft.id));
+		fd.set('file', uploadFile);
+
+		const res = await fetch('?/updateFile', { method: 'POST', body: fd });
+		if (!res.ok) return;
+
+		replaceBlockLocal({ id: draft.id, fileName: uploadFile.name, fileMime: uploadFile.type });
 		cancelEditor();
 	}
 </script>
@@ -452,9 +509,27 @@
 				class="w-full justify-start gap-2"
 				variant="outline"
 				type="button"
+				onclick={() => addBlock('subtitle')}
+			>
+				<Type class="h-4 w-4" /> Subtítulo
+			</Button>
+
+			<Button
+				class="w-full justify-start gap-2"
+				variant="outline"
+				type="button"
 				onclick={() => addBlock('text')}
 			>
 				<AlignLeft class="h-4 w-4" /> Texto
+			</Button>
+
+			<Button
+				class="w-full justify-start gap-2"
+				variant="outline"
+				type="button"
+				onclick={() => addBlock('boxText')}
+			>
+				<TextQuote class="h-4 w-4" /> Box Texto
 			</Button>
 
 			<Button
@@ -470,6 +545,15 @@
 				class="w-full justify-start gap-2"
 				variant="outline"
 				type="button"
+				onclick={() => addBlock('file')}
+			>
+				<FileUp class="h-4 w-4" /> Ficheiro
+			</Button>
+
+			<Button
+				class="w-full justify-start gap-2"
+				variant="outline"
+				type="button"
 				onclick={() => addBlock('table')}
 			>
 				<Table2 class="h-4 w-4" /> Tabela
@@ -479,7 +563,7 @@
 
 	<div class="space-y-4 lg:col-span-8">
 		<div class="rounded-md border p-4">
-			<div class="mb-3 text-sm font-medium">Canvas por Linhas</div>
+			<div class="mb-3 text-sm font-medium">Estrutura da Página</div>
 
 			{#if rows.length === 0}
 				<div class="rounded-md border border-dashed p-6 text-sm opacity-70">
@@ -582,12 +666,14 @@
 														>
 															<div class="text-sm font-medium">{typeLabel(block.type)}</div>
 															<div class="text-xs opacity-70">
-																{#if block.type === 'title'}
+																{#if block.type === 'title' || block.type === 'subtitle'}
 																	{block.titleText ?? 'Clique para editar'}
-																{:else if block.type === 'text'}
+																{:else if block.type === 'text' || block.type === 'boxText'}
 																	{(block.textValue ?? '').slice(0, 40) || 'Clique para editar'}
 																{:else if block.type === 'image'}
 																	{block.imageName ?? 'Clique para adicionar imagem'}
+																{:else if block.type === 'file'}
+																	{block.fileName ?? 'Clique para adicionar ficheiro'}
 																{:else}
 																	Clique para editar tabela
 																{/if}
@@ -664,12 +750,14 @@
 															>
 																<div class="text-sm font-medium">{typeLabel(block.type)}</div>
 																<div class="text-xs opacity-70">
-																	{#if block.type === 'title'}
+																	{#if block.type === 'title' || block.type === 'subtitle'}
 																		{block.titleText ?? 'Clique para editar'}
-																	{:else if block.type === 'text'}
+																	{:else if block.type === 'text' || block.type === 'boxText'}
 																		{(block.textValue ?? '').slice(0, 40) || 'Clique para editar'}
 																	{:else if block.type === 'image'}
 																		{block.imageName ?? 'Clique para adicionar imagem'}
+																	{:else if block.type === 'file'}
+																		{block.fileName ?? 'Clique para adicionar ficheiro'}
 																	{:else}
 																		Clique para editar tabela
 																	{/if}
@@ -745,12 +833,14 @@
 															>
 																<div class="text-sm font-medium">{typeLabel(block.type)}</div>
 																<div class="text-xs opacity-70">
-																	{#if block.type === 'title'}
+																	{#if block.type === 'title' || block.type === 'subtitle'}
 																		{block.titleText ?? 'Clique para editar'}
-																	{:else if block.type === 'text'}
+																	{:else if block.type === 'text' || block.type === 'boxText'}
 																		{(block.textValue ?? '').slice(0, 40) || 'Clique para editar'}
 																	{:else if block.type === 'image'}
 																		{block.imageName ?? 'Clique para adicionar imagem'}
+																	{:else if block.type === 'file'}
+																		{block.fileName ?? 'Clique para adicionar ficheiro'}
 																	{:else}
 																		Clique para editar tabela
 																	{/if}
@@ -799,12 +889,17 @@
 
 		{#if draft}
 			<div class="space-y-4 py-2">
-				{#if draft.type === 'title'}
+				{#if draft.type === 'title' || draft.type === 'subtitle'}
 					<div class="space-y-2">
-						<div class="text-sm font-medium">Texto do título</div>
-						<Input bind:value={draft.titleText} placeholder="Ex: Cartões IPVC" />
+						<div class="text-sm font-medium">Texto</div>
+						<Input
+							bind:value={draft.titleText}
+							placeholder={draft.type === 'subtitle'
+								? 'Ex: Requisitos técnicos'
+								: 'Ex: Cartões IPVC'}
+						/>
 					</div>
-				{:else if draft.type === 'text'}
+				{:else if draft.type === 'text' || draft.type === 'boxText'}
 					<div class="space-y-2">
 						<div class="text-sm font-medium">Texto</div>
 						<textarea
@@ -815,7 +910,7 @@
 					</div>
 				{:else if draft.type === 'image'}
 					<div class="space-y-3">
-						<div class="text-sm font-medium">Upload de imagem</div>
+						<div class="text-sm font-medium">Imagem</div>
 
 						{#if draft.imageName}
 							<div class="rounded-md border p-3 text-xs opacity-70">
@@ -832,9 +927,61 @@
 							}}
 						/>
 
+						<div class="space-y-2">
+							<label class="text-sm font-medium">Largura (%)</label>
+							<input
+								type="range"
+								min="10"
+								max="100"
+								step="1"
+								bind:value={draft.imageWidth}
+								class="w-full"
+							/>
+							<div class="text-xs opacity-70">{draft.imageWidth ?? 100}%</div>
+						</div>
+
+						<div class="space-y-2">
+							<label class="text-sm font-medium">Alinhamento</label>
+							<select class="w-full rounded-md border p-2 text-sm" bind:value={draft.imageAlign}>
+								<option value="left">Esquerda</option>
+								<option value="center">Centro</option>
+								<option value="right">Direita</option>
+							</select>
+						</div>
+
 						<div class="flex justify-end gap-2 pt-2">
 							<Button type="button" variant="outline" onclick={cancelEditor}>Cancelar</Button>
-							<Button type="button" onclick={saveImage} disabled={!imageFile}>Guardar</Button>
+
+							<Button type="button" onclick={saveImage} disabled={!imageFile}>
+								Guardar imagem
+							</Button>
+
+							<Button type="button" variant="outline" onclick={saveImageMeta}>
+								Guardar tamanho/alinhamento
+							</Button>
+						</div>
+					</div>
+				{:else if draft.type === 'file'}
+					<div class="space-y-3">
+						<div class="text-sm font-medium">Upload de ficheiro</div>
+
+						{#if draft.fileName}
+							<div class="rounded-md border p-3 text-xs opacity-70">
+								Atual: <span class="font-medium">{draft.fileName}</span>
+							</div>
+						{/if}
+
+						<input
+							type="file"
+							class="block w-full text-sm"
+							onchange={(e: Event) => {
+								uploadFile = (e.currentTarget as HTMLInputElement).files?.[0] ?? null;
+							}}
+						/>
+
+						<div class="flex justify-end gap-2 pt-2">
+							<Button type="button" variant="outline" onclick={cancelEditor}>Cancelar</Button>
+							<Button type="button" onclick={saveFile} disabled={!uploadFile}>Guardar</Button>
 						</div>
 					</div>
 				{:else if draft.type === 'table'}
@@ -903,7 +1050,7 @@
 				{/if}
 			</div>
 
-			{#if draft.type !== 'image'}
+			{#if draft.type !== 'image' && draft.type !== 'file'}
 				<Dialog.Footer>
 					<Button type="button" variant="outline" onclick={cancelEditor}>Cancelar</Button>
 					<Button type="button" onclick={saveDraft}>Guardar</Button>

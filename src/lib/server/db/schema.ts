@@ -1,4 +1,14 @@
-import { pgTable, text, timestamp, serial, integer, customType, boolean, pgEnum, jsonb } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	text,
+	timestamp,
+	serial,
+	integer,
+	customType,
+	boolean,
+	pgEnum,
+	jsonb
+} from 'drizzle-orm/pg-core';
 
 const byteaType = customType<{ data: Buffer; driverData: Buffer }>({
 	dataType() {
@@ -6,13 +16,16 @@ const byteaType = customType<{ data: Buffer; driverData: Buffer }>({
 	}
 });
 
-export const contentLang = pgEnum("content_lang", ["pt", "en"] as const);
+export const contentLang = pgEnum('content_lang', ['pt', 'en'] as const);
 
-export const contentBlockType = pgEnum("content_block_type", [
-	"title",
-	"text",
-	"image",
-	"table",
+export const contentBlockType = pgEnum('content_block_type', [
+	'title',
+	'subtitle',
+	'text',
+	'boxText',
+	'image',
+	'table',
+	'file'
 ] as const);
 
 export const rowCols = pgEnum('menu_item_row_cols', ['1', '2']);
@@ -22,7 +35,7 @@ export const user = pgTable('user', {
 	id: text('id').primaryKey(),
 	username: text('username').notNull().unique(),
 	password: text('password').notNull(),
-	isAdmin: integer('is_admin').notNull().default(0),
+	isAdmin: integer('is_admin').notNull().default(0)
 });
 
 export const session = pgTable('session', {
@@ -70,9 +83,14 @@ export const menuItemContent = pgTable('menu_item_content', {
 	imageData: byteaType('image_data'),
 	imageMime: text('image_mime'),
 	imageName: text('image_name'),
+	imageWidth: integer('image_width').default(100),
+	imageAlign: text('image_align').default('center'),
 
 	tableData: jsonb('table_data'),
 
+	fileData: byteaType('file_data'),
+	fileMime: text('file_mime'),
+	fileName: text('file_name'),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
@@ -85,16 +103,12 @@ export const menuItemRow = pgTable('menu_item_row', {
 		.references(() => menuItem.id, { onDelete: 'cascade' }),
 
 	lang: contentLang('lang').notNull(),
-
 	rowIndex: integer('row_index').notNull(),
-
 	cols: rowCols('cols').notNull().default('1'),
 
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
-
-
 
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
